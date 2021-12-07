@@ -11,7 +11,7 @@ module.exports = class Miner extends Client {
   /**
    * When a new miner is created, but the PoW search is **not** yet started.
    * The initialize method kicks things off.
-   * 
+   *
    * @constructor
    * @param {Object} obj - The properties of the client.
    * @param {String} [obj.name] - The miner's name, used for debugging messages.
@@ -45,7 +45,7 @@ module.exports = class Miner extends Client {
 
   /**
    * Sets up the miner to start searching for a new block.
-   * 
+   *
    * @param {Set} [txSet] - Transactions the miner has that have not been accepted yet.
    */
   startNewSearch(txSet=new Set()) {
@@ -56,11 +56,17 @@ module.exports = class Miner extends Client {
     // by a recently received block, but that the miner is aware of.
     txSet.forEach((tx) => this.transactions.add(tx));
 
+    let i=0;
     // Add queued-up transactions to block.
     this.transactions.forEach((tx) => {
+      if (i===8) {break;} //new
+      else { //new
       this.currentBlock.addTransaction(tx, this);
+      i++; } //new
     });
-    this.transactions.clear();
+    //this.transactions.clear();
+
+
 
     // Start looking for a proof at 0.
     this.currentBlock.proof = 0;
@@ -69,10 +75,10 @@ module.exports = class Miner extends Client {
   /**
    * Looks for a "proof".  It breaks after some time to listen for messages.  (We need
    * to do this since JS does not support concurrency).
-   * 
+   *
    * The 'oneAndDone' field is used for testing only; it prevents the findProof method
    * from looking for the proof again after the first attempt.
-   * 
+   *
    * @param {boolean} oneAndDone - Give up after the first PoW search (testing only).
    */
   findProof(oneAndDone=false) {
@@ -105,7 +111,7 @@ module.exports = class Miner extends Client {
    * Receives a block from another miner. If it is valid,
    * the block will be stored. If it is also a longer chain,
    * the miner will accept it and replace the currentBlock.
-   * 
+   *
    * @param {Block | Object} b - The block
    */
   receiveBlock(s) {
@@ -129,9 +135,9 @@ module.exports = class Miner extends Client {
    * any transactions from the rolled-back blocks), remove any transactions
    * already included in the newly accepted blocks, and add any remaining
    * transactions to the new block.
-   * 
+   *
    * @param {Block} nb - The newly accepted block.
-   * 
+   *
    * @returns {Set} - The set of transactions that have not yet been accepted by the new block.
    */
   syncTransactions(nb) {
@@ -165,7 +171,7 @@ module.exports = class Miner extends Client {
   /**
    * Returns false if transaction is not accepted. Otherwise stores
    * the transaction to be added to the next block.
-   * 
+   *
    * @param {Transaction | String} tx - The transaction to add.
    */
   addTransaction(tx) {
