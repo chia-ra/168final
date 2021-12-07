@@ -58,13 +58,26 @@ module.exports = class Miner extends Client {
 
     let i=0;
     // Add queued-up transactions to block.
+    /*
     this.transactions.forEach((tx) => {
-      if (i===8) {break;} //new
+      if (i===8) {return;} //new
       else { //new
       this.currentBlock.addTransaction(tx, this);
       i++; } //new
     });
+    */
     //this.transactions.clear();
+
+    try {
+      this.transactions.forEach((tx) => {
+        if (i===8) {throw 'Break';} //new
+        else { //new
+          this.currentBlock.addTransaction(tx, this);
+          i++; } //new
+      });
+    } catch (e) {
+      if (e !== 'Break') throw e
+    }
 
 
 
